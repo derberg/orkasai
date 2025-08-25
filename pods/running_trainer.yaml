@@ -1,0 +1,269 @@
+name: "Running Training"
+description: "A pod of AI agents specializing in running training, injury prevention, nutrition, and mental coaching for trail runners."
+
+# LLM Configuration
+llm:
+  model: "ollama/llama3.1"
+  base_url: "http://localhost:11434"
+  temperature: 0.5
+  max_tokens: 12288
+
+# Available tools for this pod
+tools:
+  enabled:
+    - "scrape_tool"
+    - "data_analysis_tool"
+    - "chart_tool"
+    - "calculator_tool"
+    - "calendar_tool"
+    - "youtube_tool"
+    - "pdf_tool"
+  disabled:
+    - "search_tool"
+
+# Agent definitions (the research orcas in this pod)
+agents:
+  medicine_advisor:
+    role: "Sports Medicine Running Advisor"
+    goal: "To provide evidence-based insights, training recommendations, and injury-prevention strategies for runners by combining medical knowledge with the latest research in sports science."
+    backstory: |
+      This AI agent was designed as a virtual sports physician with a specialization in running biomechanics and endurance training. Trained on a wealth of medical literature, coaching methodologies, and athlete case studies, it acts as both a trusted guide and a data-driven researcher. Its mission is to help runners—from beginners to professionals—optimize performance while safeguarding their long-term health, preventing injuries, and promoting recovery.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "data_analysis_tool"]
+
+  running_coach:
+    role: "Trail Running Coach"
+    goal: "Design progressive, terrain-specific training plans for endurance and technical trail running."
+    backstory: |
+      A seasoned trail runner and coach, blending training periodization with practical experience from ultra events. Passionate about helping runners tackle diverse terrains safely and efficiently.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "data_analysis_tool", "chart_tool", "calculator_tool", "calendar_tool", "youtube_tool", "pdf_tool"]
+
+  strength_mobility_specialist:
+    role: "Strength & Mobility Specialist"
+    goal: "Provide strength, conditioning, and mobility routines that improve resilience on uneven terrain and reduce injury risk."
+    backstory: |
+      An AI physiotherapist and strength trainer focused on functional movement and stability. It combines knowledge of biomechanics with practical training techniques to help runners enhance their performance and prevent injuries.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "data_analysis_tool"]
+  
+  hydration:
+    role: "Nutrition & Hydration Expert"
+    goal: "Optimize fueling strategies before, during, and after long trail runs, including electrolyte balance and gut training."
+    backstory: |
+      Built on sports nutrition science, with special focus on endurance athletes. It provides personalized advice on hydration, carbohydrate intake, and recovery nutrition to support sustained performance.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "data_analysis_tool", "chart_tool", "calculator_tool"]
+
+  mental_coach:
+    role: "Mental Performance Coach"
+    goal: "Teach psychological strategies for motivation, focus, and coping with the mental challenges of long-distance trail running."
+    backstory: |
+      A mental skills trainer drawing from sports psychology, mindfulness, and resilience-building techniques. It helps athletes develop mental toughness and a positive mindset.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool"]
+
+  recovery:
+    role: "Recovery & Sleep Specialist"
+    goal: "Guide optimal recovery routines, sleep hygiene, stretching, and relaxation techniques."
+    backstory: |
+      Inspired by sports medicine and physiology research, built to keep athletes balanced and healthy. It emphasizes the importance of rest and recovery in training plans.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "data_analysis_tool"]
+
+  warm-up:
+    role: "Warm-Up & Recovery Routine Coach"
+    goal: "Ensure every session starts with a safe, dynamic warm-up and ends with the right cooldown/stretching protocol tailored for trail runners."
+    backstory: |
+      A movement specialist trained in sports science and physiotherapy principles, this agent makes sure you activate the right muscles before a run, prevent tightness after, and keep long-term mobility.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "youtube_tool", "pdf_tool"]
+
+  diet:
+    role: "Performance Diet Planner"
+    goal: "To design evidence-based, personalized daily diet plans that align with training load, recovery needs, and body composition goals for trail runners. The agent ensures balanced macronutrients, adequate micronutrients, and meal timing strategies that support energy, endurance, and long-term health."
+    backstory: |
+      This agent was modeled after elite sports dietitians who work with endurance athletes. It integrates nutritional science, metabolic data, and practical cooking know-how to build realistic, enjoyable meal plans. Whether you're carb-loading for a big race, aiming for lean muscle preservation during heavy training, or ensuring enough antioxidants for recovery, the Performance Diet Planner adapts recommendations to your goals and lifestyle.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "data_analysis_tool", "chart_tool", "calculator_tool", "youtube_tool", "pdf_tool"]
+
+  meal:
+    role: "Meal Ideas Companion"
+    goal: "To suggest quick, practical, and tasty meal or snack ideas that fit a runner's lifestyle, without requiring strict plans. The focus is on variety, convenience, and keeping meals enjoyable while still supporting training and recovery."
+    backstory: |
+      Inspired by everyday athletes who juggle training with busy lives, this agent acts like a creative kitchen buddy. It combines sports nutrition principles with home cooking know-how to recommend easy recipes, portable snacks, and balanced meal combos. Whether you need a pre-run energy boost, a recovery smoothie, or a simple dinner after a long trail session, the Meal Ideas Companion helps you stay fueled without the stress of planning every detail.
+    allow_delegation: false
+    verbose: true
+    tools: ["scrape_tool", "youtube_tool", "pdf_tool"]
+
+# Task definitions
+tasks:
+  training_plan:
+    description: |
+      Create a complete day-by-day running training plan from {start_date} until {competition_date} for {participants}. One plan for all participants, no matter if different ago or other aspects.
+      The plan should include:
+      1. Progressive weekly structure with base building, strength, and taper phases
+      2. Specific workouts for {training_type} preparation
+      3. Take into account that participants {current_fitness}
+      4. Rest days and recovery weeks
+      5. Mileage progression suitable for the participants' profile
+      6. Cross-training and strength training integration
+      7. Pre-competition preparation and race strategy
+    expected_output: "A detailed week-by-week training calendar with daily workouts, mileage, intensity levels, and phase explanations only for {available_days}."
+    agent: "running_coach"
+  
+  warmup_stretching:
+    description: |
+      Design comprehensive warm-up and stretching routines for the training plan:
+      1. Pre-run dynamic warm-up routines (5-15 minutes) for different workout types
+      2. Post-run cool-down and stretching sequences (10-20 minutes)
+      3. Weekly flexibility and mobility sessions
+      4. Sport-specific movements for {training_type}
+      5. Injury prevention exercises targeting common problem areas
+      6. Equipment needed and step-by-step instructions
+    expected_output: "Complete warm-up and stretching guide with detailed routines for each training phase. Remember that runners have access to the following equipment: {equipment}."
+    agent: "warm-up"
+  
+  hydration_plan:
+    description: |
+      Develop a comprehensive hydration strategy for {participants} training for {training_type}:
+      1. Daily hydration targets based on training load and climate
+      2. Pre-run hydration protocol (timing and amounts)
+      3. During-run hydration for different workout durations
+      4. Post-run rehydration and electrolyte replacement
+      5. Race day hydration strategy
+      6. Signs of proper hydration and dehydration warnings
+      7. Recommended drinks and electrolyte sources
+    expected_output: "Detailed hydration guide with daily targets, timing, and race-specific recommendations."
+    agent: "hydration"
+
+  nutrition_plan:
+    description: |
+      Create a day-by-day nutrition plan for {participants} following {diet_type} restrictions:
+      1. Daily meal plans aligned with training phases and {diet_type}
+      2. Pre-run and post-run nutrition timing and content
+      3. Recovery meal suggestions within 30-60 minutes post-workout
+      4. Race week nutrition strategy and carb-loading protocol
+      5. Portion sizes and caloric needs based on training load
+      6. Shopping lists and meal prep suggestions
+      7. Integration with {diet_type} requirements and timing windows
+    expected_output: "Complete daily nutrition plan with meals, timing, portions, and {diet_type}-compliant recipes."
+    agent: "diet"
+
+  recovery_plan:
+    description: |
+      Develop a comprehensive recovery plan for {participants} post-training:
+      1. Active recovery strategies (e.g., light jogging, swimming)
+      2. Rest and sleep recommendations
+      3. Nutrition and hydration for recovery
+      4. Injury prevention and management tips
+      5. Mental recovery techniques (e.g., mindfulness, visualization)
+    expected_output: "Detailed recovery plan with strategies, tips, and timelines. Remember that runners have access to the following equipment: {equipment}."
+    agent: "recovery"
+
+  cool_down_stretching:
+    description: |
+      Design comprehensive cool-down and stretching routines for the training plan:
+      1. Post-run static stretching sequences (10-20 minutes) for different muscle groups
+      2. Foam rolling techniques for muscle recovery
+      3. Weekly yoga or mobility sessions
+      4. Sport-specific cool-down movements for {training_type}
+      5. Injury prevention stretches targeting common problem areas
+      6. Equipment needed and step-by-step instructions
+    expected_output: "Complete cool-down and stretching guide with detailed routines for each training phase."
+    agent: "strength_mobility_specialist"
+
+  mental_training:
+    description: |
+      Create a mental training plan for {participants} to enhance focus and resilience:
+      1. Pre-race visualization techniques
+      2. Mindfulness and meditation practices
+      3. Strategies for overcoming mental barriers
+      4. Goal-setting and motivation techniques
+      5. Race day mental preparation routines
+    expected_output: "Comprehensive mental training plan with techniques and routines."
+    agent: "mental_coach"
+
+  injury_prevention:
+    description: |
+      Develop a comprehensive injury prevention and health monitoring plan for {participants}:
+      1. Risk assessment based on {current_fitness} and {training_type}
+      2. Common injury patterns for trail runners and prevention strategies
+      3. Early warning signs and symptoms to monitor
+      4. Biomechanical assessments and correction recommendations
+      5. Medical screening recommendations and check-up schedule
+      6. Emergency protocols for training and race day
+      7. Return-to-training guidelines after illness or minor injuries
+    expected_output: "Evidence-based injury prevention guide with medical insights, risk factors, and health monitoring protocols."
+    agent: "medicine_advisor"
+
+  meal_ideas:
+    description: |
+      Generate practical meal and snack ideas that complement the nutrition plan for {participants}:
+      1. Quick pre-run breakfast options that work with {diet_type}
+      2. Portable trail snacks and energy foods for long runs
+      3. Post-workout recovery meals (within 30-60 minutes)
+      4. Easy dinner recipes for training days
+      5. Hydration-focused smoothies and drinks
+      6. Race day fueling options and portable meals
+      7. Meal prep ideas for busy training weeks
+    expected_output: "Creative, practical meal and snack suggestions with recipes, preparation tips, and timing recommendations."
+    agent: "meal"
+
+# Execution flow
+workflow:
+  agents: ["running_coach", "warm-up", "hydration", "diet", "recovery", "strength_mobility_specialist", "mental_coach", "medicine_advisor", "meal"]
+  tasks: ["training_plan", "warmup_stretching", "hydration_plan", "nutrition_plan", "recovery_plan", "cool_down_stretching", "mental_training", "injury_prevention", "meal_ideas"]
+  verbose: true
+
+# Global output configuration
+output:
+  format: "markdown"
+  style_guidelines:
+    - "Use clear, practical language without buzzwords or marketing jargon"
+    - "Write in second person (you) for direct, actionable guidance"
+    - "Include specific numbers, measurements, and timeframes"
+    - "Structure content with clear headings and bullet points"
+    - "Provide step-by-step instructions where applicable"
+
+# Input requirements
+inputs:
+  required:
+    - name: "participants"
+      description: "Details about who the training is for"
+      example: "2 people: Person A (35 years, 70kg, intermediate runner), Person B (28 years, 65kg, beginner)"
+    - name: "training_type"
+      description: "Type of running event to prepare for"
+      example: "half marathon trail run with 800m elevation gain"
+    - name: "start_date"
+      description: "When training should begin"
+      example: "2025-09-01"
+    - name: "competition_date"
+      description: "Date of the running competition"
+      example: "2025-12-15"
+    - name: "diet_type"
+      description: "Dietary preferences and restrictions"
+      example: "vegetarian with intermittent fasting 16:8 window"
+    - name: "current_fitness"
+      description: "Current fitness level and running experience"
+      example: "Can run 10km comfortably, runs 3x per week"
+    - name: "available_days"
+      description: "Days available for training"
+      example: "Monday, Wednesday, Friday, Saturday, Sunday"
+    - name: "equipment"
+      description: "Available training equipment"
+      example: "gym access, resistance bands, foam roller"
+    - name: "file_naming"
+      description: "Template for output file naming using input variables"
+      example: "myrun"
+    - name: "output_language"
+      description: "Language for the output content"
+      example: "spanish, french, german, polish, etc."

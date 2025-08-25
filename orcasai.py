@@ -34,6 +34,8 @@ Examples:
 
 import argparse
 import sys
+import os
+from pathlib import Path
 from typing import Dict, Any
 from orca_pod_runner import OrcaPodRunner
 
@@ -93,16 +95,43 @@ class OrcaCLI:
             inputs = {}
         
         # Check if pod exists
-        if pod_name not in self.runner.loader.list_pods():
+        pod_config = self.runner.loader.pods.get(pod_name)
+        if not pod_config:
             print(f"❌ Pod '{pod_name}' not found in the ocean.")
             print("\n🐋 Available pods:")
-            for pod in self.runner.loader.list_pods():
+            for pod in self.runner.loader.pods.keys():
                 print(f"   • {pod}")
             return
         
-        print(f"\n� Deploying pod: {pod_name}")
+        # Add output configuration to inputs for agents to use
+        output_config = pod_config.get('output', {})
+        if output_config:
+            # Add style guidelines as context for agents
+            style_guidelines = output_config.get('style_guidelines', [])
+            # Only use user input for language, no YAML default
+            language = inputs.get('output_language')
+            
+            guidelines_parts = []
+            if language:
+                guidelines_parts.append(f"- Write all content in {language}")
+            if style_guidelines:
+                guidelines_parts.extend([f"- {guideline}" for guideline in style_guidelines])
+            
+            if guidelines_parts:
+                guidelines_text = "\n".join(guidelines_parts)
+                inputs['_output_guidelines'] = f"""
+IMPORTANT OUTPUT FORMATTING REQUIREMENTS:
+{guidelines_text}
+
+Please follow these guidelines strictly in all your responses.
+"""
+        
+        print(f"\n🐋 Deploying pod: {pod_name}")
         if inputs:
-            print(f"📝 Mission parameters: {inputs}")
+            # Don't show internal guidelines in the display
+            display_inputs = {k: v for k, v in inputs.items() if not k.startswith('_')}
+            if display_inputs:
+                print(f"📝 Mission parameters: {display_inputs}")
         
         result = self.runner.run_pod(pod_name, inputs)
         
@@ -110,8 +139,82 @@ class OrcaCLI:
             print(f"\n📄 Mission Results:")
             print("=" * 70)
             print(result.raw)
+            
+            # Handle file output if configured
+            self._save_output_files(pod_name, pod_config, inputs, result)
         else:
             print("❌ Pod mission failed.")
+    
+    def _save_output_files(self, pod_name: str, pod_config: Dict[str, Any], inputs: Dict[str, Any], result: Any):
+        """Save pod results to files based on output configuration."""
+        output_config = pod_config.get('output', {})
+        if not output_config:
+            return
+        
+        try:
+            # Create output folder - hardcoded path
+            folder = "./results"
+            Path(folder).mkdir(parents=True, exist_ok=True)
+            
+            # Generate filename
+            file_naming = inputs.get('file_naming', '{pod_name}_{timestamp}')
+            filename = self._generate_filename(file_naming, pod_name, inputs)
+            
+            # Determine file extension
+            file_format = output_config.get('format', 'markdown')
+            extension = '.md' if file_format == 'markdown' else '.txt'
+            
+            filepath = Path(folder) / f"{filename}{extension}"
+            
+            # Format content based on configuration
+            content = self._format_output_content(result.raw, output_config, pod_config)
+            
+            # Save file
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(content)
+            
+            print(f"\n💾 Results saved to: {filepath}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to save output files: {e}")
+    
+    def _generate_filename(self, naming_pattern: str, pod_name: str, inputs: Dict[str, Any]) -> str:
+        """Generate filename from naming pattern and inputs."""
+        from datetime import datetime
+        
+        # Start with the pattern
+        filename = naming_pattern
+        
+        # Replace common placeholders
+        filename = filename.replace('{pod_name}', pod_name)
+        filename = filename.replace('{timestamp}', datetime.now().strftime('%Y%m%d_%H%M%S'))
+        
+        # Replace input placeholders
+        for key, value in inputs.items():
+            if not key.startswith('_'):  # Skip internal variables
+                # Clean value for filename
+                clean_value = str(value).replace(' ', '_').replace('/', '_')[:50]
+                filename = filename.replace(f'{{{key}}}', clean_value)
+        
+        # Clean up any remaining brackets and invalid characters
+        filename = filename.replace('{', '').replace('}', '')
+        filename = ''.join(c for c in filename if c.isalnum() or c in '_-.')
+        
+        return filename
+    
+    def _format_output_content(self, raw_content: str, output_config: Dict[str, Any], pod_config: Dict[str, Any]) -> str:
+        """Format output content based on configuration."""
+        content_parts = []
+        
+        # Add header
+        pod_name = pod_config.get('name', 'Pod Results')
+        content_parts.append(f"# {pod_name}")
+        content_parts.append(f"*Generated by OrcasAI*\n")
+        
+        # Add the raw content directly
+        content_parts.append(raw_content)
+        
+        return "\n".join(content_parts)
     
     def interactive_mode(self):
         """Run in interactive mode."""
@@ -225,17 +328,6 @@ class OrcaCLI:
                 value = input(prompt).strip()
                 if value:
                     inputs[name] = value
-        
-        # Allow additional custom inputs
-        print(f"\n📝 Additional parameters (optional):")
-        while True:
-            key = input("Enter parameter name (or 'done' to finish): ").strip()
-            if key.lower() == 'done':
-                break
-            if key:
-                value = input(f"Enter value for '{key}': ").strip()
-                if value:
-                    inputs[key] = value
         
         return inputs
 

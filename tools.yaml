@@ -38,3 +38,51 @@ tools:
     module: "custom_tools"
     description: "Generate chart and visualization recommendations for different types of data"
     config: {}
+
+  calculator_tool:
+    class: "CalculatorTool"
+    module: "crewai_tools"
+    description: "Perform mathematical calculations for training metrics, pacing, nutrition calculations"
+    config: {}
+
+  weather_tool:
+    class: "WeatherTool"
+    module: "crewai_tools"
+    description: "Get weather information for training planning and race day preparation"
+    config: {}
+
+  calendar_tool:
+    class: "CalendarTool"
+    module: "crewai_tools"
+    description: "Create and manage training schedules, track progress, and plan periodization"
+    config: {}
+
+  youtube_tool:
+    class: "YoutubeChannelSearchTool"
+    module: "crewai_tools"
+    description: "Search for running technique videos, training demonstrations, and expert content"
+    config: {}
+
+  pdf_tool:
+    class: "PDFSearchTool"
+    module: "crewai_tools"
+    description: "Search and extract information from training guides, research papers, and manuals"
+    config: {}
+
+  directory_tool:
+    class: "DirectorySearchTool"
+    module: "crewai_tools"
+    description: "Search local directories for training logs, data files, and documentation"
+    config: {}
+
+  json_tool:
+    class: "JSONSearchTool"
+    module: "crewai_tools"
+    description: "Parse and analyze training data stored in JSON format (GPS, heart rate, etc.)"
+    config: {}
+
+  csv_tool:
+    class: "CSVSearchTool"
+    module: "crewai_tools"
+    description: "Analyze training logs, nutrition data, and performance metrics in CSV format"
+    config: {}
