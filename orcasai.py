@@ -38,6 +38,12 @@ import sys
 import os
 from pathlib import Path
 from typing import Dict, Any
+
+# Set global timeouts for all LLM operations
+os.environ['LITELLM_TIMEOUT'] = '2400'  # 40 minutes
+os.environ['LITELLM_REQUEST_TIMEOUT'] = '2400'
+os.environ['OPENAI_TIMEOUT'] = '2400'
+
 from orca_pod_runner import OrcaPodRunner
 
 

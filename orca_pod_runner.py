@@ -193,11 +193,19 @@ class OrcaPodLoader:
         """Create LLM instance from pod configuration."""
         llm_config = pod_config.get('llm', {})
         
+        # Set timeout environment variables for litellm
+        timeout_seconds = llm_config.get('timeout', 1800)  # Default 30 minutes
+        os.environ['LITELLM_TIMEOUT'] = str(timeout_seconds)
+        os.environ['LITELLM_REQUEST_TIMEOUT'] = str(timeout_seconds)
+        
+        print(f"🕐 LLM timeout set to {timeout_seconds} seconds ({timeout_seconds//60} minutes)")
+        
         return LLM(
             model=llm_config.get('model', 'ollama/llama3.2'),
             base_url=llm_config.get('base_url', 'http://localhost:11434'),
             temperature=llm_config.get('temperature', 0.7),
-            max_tokens=llm_config.get('max_tokens', 2048)
+            max_tokens=llm_config.get('max_tokens', 2048),
+            timeout=timeout_seconds  # Set timeout directly on LLM
         )
     
     def create_agents(self, pod_config: Dict[str, Any], llm: LLM) -> Dict[str, Agent]:
