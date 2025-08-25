@@ -18,7 +18,6 @@ OrcasAI provides a simple YAML configuration layer on top of CrewAI, making it e
 - **🎯 CLI Interface**: Command-line interface for running pods
 - **🔄 Flexible Inputs**: Pass different parameters to each pod
 - **🧠 LLM Support**: Configure different language models per pod
-- **🔒 Virtual Environment**: Isolated Python environment for clean deployment
 
 ## 🗂️ Project Structure
 
@@ -188,32 +187,6 @@ python orcasai.py interactive
 ```bash
 python orcasai.py list --pods-dir=my_custom_pods --tools-config=my_tools.yaml
 ```
-
-## 🐋 Built-in Pods
-
-### 1. Content Creation Pod
-**Agents for blog writing and content creation with research**
-
-- **Agents**: Planner, Writer, Editor
-- **Purpose**: Create well-researched content
-- **Tools**: Search, Web scraping
-- **Input**: `topic` (required)
-
-### 2. Code Development Pod
-**Agents for building software systems**
-
-- **Agents**: Architect, Developer, Reviewer
-- **Purpose**: Software development, code review, documentation
-- **Tools**: Search, File operations, Code analysis
-- **Input**: `project` (required), `language`, `framework` (optional)
-
-### 3. Research & Analysis Pod
-**Agents for market research and data analysis**
-
-- **Agents**: Researcher, Analyst, Strategist  
-- **Purpose**: Market research, data analysis, competitive intelligence
-- **Tools**: Search, Web scraping, Data analysis, Charts
-- **Input**: `topic` (required), `industry`, `region` (optional)
 
 ## 📝 Pod Configuration Format
 
@@ -389,55 +362,3 @@ OrcasAI applies these principles to AI agent coordination, where each "agent" ha
 ## 🙏 Credits
 
 This project is built on top of [CrewAI](https://crewai.com/), an excellent open-source framework for orchestrating role-playing, autonomous AI agents. CrewAI provides the core agent coordination capabilities, while OrcasAI adds a simplified YAML-based configuration layer.
-
-## 🚀 Deployment & Production
-
-### Virtual Environment Management
-
-**Manual Activation:**
-```bash
-# Linux/macOS
-source venv/bin/activate
-
-# Windows
-venv\Scripts\activate
-```
-
-### Cross-Platform Deployment
-
-OrcasAI is designed to work seamlessly across different systems:
-
-1. **Development Machine Setup**: Use the automated setup scripts
-2. **Production Deployment**: 
-   - Clone the repository
-   - Run the setup script for your platform
-   - Configure environment variables as needed
-
-3. **Docker Deployment** (Advanced):
-   ```dockerfile
-   FROM python:3.9-slim
-   WORKDIR /app
-   COPY requirements.txt .
-   RUN pip install -r requirements.txt
-   COPY . .
-   CMD ["python", "orcasai.py", "--help"]
-   ```
-
-### Environment Isolation Benefits
-
-- ✅ **No dependency conflicts** with other Python projects
-- ✅ **Consistent versions** across different machines
-- ✅ **Easy cleanup** - just delete the `venv` folder
-- ✅ **Reproducible** installations using `requirements.txt`
-- ✅ **Multiple versions** - different projects can use different OrcasAI versions
-
-## 🙏 Credits
-
-This project is built on top of [CrewAI](https://crewai.com/), an excellent open-source framework for orchestrating role-playing, autonomous AI agents. CrewAI provides the core agent coordination capabilities, while OrcasAI adds a simplified YAML-based configuration layer.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a new pod or enhance existing ones
-3. Add custom tools that extend functionality
-4. Submit a pull request with your improvements

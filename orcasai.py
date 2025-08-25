@@ -3,7 +3,12 @@
 OrcasAI Pod CLI - Command Line Interface for Orca Pod Management
 
 The perfect coordination tool for your orca pods - groups of AI agents
-working together with the intelligence and teamwork of real orcas.
+wor                except ValueError:
+                    print("❌ Invalid input. Please enter a number.")
+            
+            elif choice == "4":
+                print("🌊 Returning to surface... Goodbye!")
+                breakher with the intelligence and teamwork of real orcas.
 
 Usage:
     python orcasai.py list [--pods-dir=<dir>]                    # List all available pods
@@ -127,27 +132,46 @@ class OrcaCLI:
                 self.list_pods()
             
             elif choice == "2":
-                pods = self.runner.loader.list_pods()
+                pods = list(self.runner.loader.pods.keys())
                 if not pods:
                     print("🐋 No pods in the ocean.")
                     continue
                 
-                print(f"\n🐋 Available pods: {', '.join(pods)}")
-                pod_name = input("Enter pod name: ").strip()
-                self.pod_info(pod_name)
+                print(f"\n🐋 Available pods:")
+                for i, pod in enumerate(pods, 1):
+                    print(f"   {i}. {pod}")
+                
+                try:
+                    pod_choice = int(input(f"\nSelect pod (1-{len(pods)}): ").strip())
+                    if 1 <= pod_choice <= len(pods):
+                        pod_name = pods[pod_choice - 1]
+                        self.pod_info(pod_name)
+                    else:
+                        print(f"❌ Invalid choice. Please enter 1-{len(pods)}.")
+                except ValueError:
+                    print("❌ Invalid input. Please enter a number.")
             
             elif choice == "3":
-                pods = self.runner.loader.list_pods()
+                pods = list(self.runner.loader.pods.keys())
                 if not pods:
                     print("🐋 No pods in the ocean.")
                     continue
                 
-                print(f"\n🐋 Available pods: {', '.join(pods)}")
-                pod_name = input("Enter pod name for mission: ").strip()
+                print(f"\n🐋 Available pods:")
+                for i, pod in enumerate(pods, 1):
+                    print(f"   {i}. {pod}")
                 
-                if pod_name not in pods:
-                    print(f"❌ Pod '{pod_name}' not found in the ocean.")
-                    continue
+                try:
+                    pod_choice = int(input(f"\nSelect pod for mission (1-{len(pods)}): ").strip())
+                    if 1 <= pod_choice <= len(pods):
+                        pod_name = pods[pod_choice - 1]
+                        # Get inputs based on pod type
+                        inputs = self._get_pod_inputs(pod_name)
+                        self.run_pod(pod_name, inputs)
+                    else:
+                        print(f"❌ Invalid choice. Please enter 1-{len(pods)}.")
+                except ValueError:
+                    print("❌ Invalid input. Please enter a number.")
                 
                 # Get inputs based on pod type
                 inputs = self._get_pod_inputs(pod_name)
@@ -164,22 +188,43 @@ class OrcaCLI:
         """Get inputs for a specific pod interactively."""
         inputs = {}
         
-        # Get pod info to show required inputs
-        info = self.runner.loader.get_pod_info(pod_name)
+        # Get pod configuration directly to access full input details
+        pod_config = self.runner.loader.pods.get(pod_name, {})
+        input_config = pod_config.get('inputs', {})
         
-        if info.get('required_inputs'):
-            print(f"\n📝 Required mission parameters:")
-            for inp in info['required_inputs']:
-                value = input(f"Enter {inp}: ").strip()
+        if input_config.get('required'):
+            print(f"\n📝 Required parameters:")
+            for inp in input_config['required']:
+                name = inp['name']
+                description = inp.get('description', f'{name} parameter')
+                example = inp.get('example', '')
+                
+                prompt = f"Enter {name} ({description})"
+                if example:
+                    prompt += f"\n   Example: {example}"
+                prompt += ": "
+                
+                value = input(prompt).strip()
                 if value:
-                    inputs[inp] = value
+                    inputs[name] = value
+                else:
+                    print(f"⚠️  {name} is required but no value provided")
         
-        if info.get('optional_inputs'):
-            print(f"\n📝 Optional mission parameters (press Enter to skip):")
-            for inp in info['optional_inputs']:
-                value = input(f"Enter {inp} (optional): ").strip()
+        if input_config.get('optional'):
+            print(f"\n📝 Optional parameters (press Enter to skip):")
+            for inp in input_config['optional']:
+                name = inp['name']
+                description = inp.get('description', f'{name} parameter')
+                example = inp.get('example', '')
+                
+                prompt = f"Enter {name} ({description}, optional)"
+                if example:
+                    prompt += f"\n   Example: {example}"
+                prompt += ": "
+                
+                value = input(prompt).strip()
                 if value:
-                    inputs[inp] = value
+                    inputs[name] = value
         
         # Allow additional custom inputs
         print(f"\n📝 Additional parameters (optional):")
