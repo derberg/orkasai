@@ -1,14 +1,12 @@
-# 🐋 OrcasAI - Pod-Based AI Agent Coordination System
-
-**Built on CrewAI** - A YAML-based system for managing groups of AI agents that work together like orcas in pods.
-
-*This tool is built on top of [CrewAI](https://crewai.com/), an open-source framework for orchestrating role-playing, autonomous AI agents.*
-
 ## 🌊 What is OrcasAI?
 
 OrcasAI is inspired by how orcas work together in pods. Just like orcas coordinate to accomplish complex tasks, this system organizes AI agents into specialized groups called "pods" to handle different challenges.
 
 OrcasAI provides a simple YAML configuration layer on top of CrewAI, making it easy to create and manage agent teams without writing code.
+
+## 🙏 Credits
+
+This project is built on top of [CrewAI](https://crewai.com/), an excellent open-source framework for orchestrating role-playing, autonomous AI agents. CrewAI provides the core agent coordination capabilities, while OrcasAI adds a simplified YAML-based configuration layer.
 
 ### Key Features
 
@@ -358,7 +356,3 @@ Real orcas are intelligent marine mammals known for:
 - **Collective Success**: Achieving goals no single orca could accomplish alone
 
 OrcasAI applies these principles to AI agent coordination, where each "agent" has specialized skills and works together with others in the pod to accomplish complex tasks.
-
-## 🙏 Credits
-
-This project is built on top of [CrewAI](https://crewai.com/), an excellent open-source framework for orchestrating role-playing, autonomous AI agents. CrewAI provides the core agent coordination capabilities, while OrcasAI adds a simplified YAML-based configuration layer.
