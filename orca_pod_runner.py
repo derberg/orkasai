@@ -51,6 +51,7 @@ class ToolRegistry:
                             init_kwargs[key] = env_value
                         else:
                             print(f"⚠️  Warning: Environment variable {env_var} not set for tool {name}")
+                            print(f"🔄 Switching to tool-free mode for optimal performance")
                             # Don't register the tool if required env var is missing
                             self.tools[name] = None
                             return
@@ -65,6 +66,7 @@ class ToolRegistry:
             
         except Exception as e:
             print(f"❌ Failed to register tool {name}: {e}")
+            print(f"🔄 Fallback: Agent will use built-in knowledge instead")
             self.tools[name] = None
     
     def get_tool(self, name: str):

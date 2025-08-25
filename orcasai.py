@@ -114,15 +114,24 @@ class OrcaCLI:
             
             guidelines_parts = []
             if language:
-                guidelines_parts.append(f"- Write all content in {language}")
+                guidelines_parts.append(f"- SEARCH AND RESEARCH in English and {language} for best results")
+                guidelines_parts.append(f"- THINK AND ANALYZE in English for optimal reasoning")
+                guidelines_parts.append(f"- WRITE FINAL OUTPUT in {language} only")
+                guidelines_parts.append(f"- Use English keywords when searching for information unless they are provided in {language}")
             if style_guidelines:
                 guidelines_parts.extend([f"- {guideline}" for guideline in style_guidelines])
             
             if guidelines_parts:
                 guidelines_text = "\n".join(guidelines_parts)
                 inputs['_output_guidelines'] = f"""
-IMPORTANT OUTPUT FORMATTING REQUIREMENTS:
+IMPORTANT LANGUAGE AND OUTPUT REQUIREMENTS:
 {guidelines_text}
+
+PROCESS:
+1. Search using English terms unless data provided in {language}
+2. Think and analyze information in English 
+3. Only translate the final response to the requested language
+4. This ensures better search results and reasoning quality
 
 Please follow these guidelines strictly in all your responses.
 """
