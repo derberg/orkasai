@@ -6,7 +6,8 @@ llm:
   model: "ollama/llama3.1"
   base_url: "http://localhost:11434"
   temperature: 0.5
-  max_tokens: 12288
+  max_tokens: 4096
+  timeout: 900
 
 # Available tools for this pod
 tools:
@@ -106,16 +107,16 @@ agents:
 tasks:
   training_plan:
     description: |
-      Create a complete day-by-day running training plan from {start_date} until {competition_date} for {participants}. One plan for all participants, no matter if different ago or other aspects.
-      The plan should include:
-      1. Progressive weekly structure with base building, strength, and taper phases
-      2. Specific workouts for {training_type} preparation
-      3. Take into account that participants {current_fitness}
-      4. Rest days and recovery weeks
-      5. Mileage progression suitable for the participants' profile
-      6. Cross-training and strength training integration
-      7. Pre-competition preparation and race strategy
-    expected_output: "A detailed week-by-week training calendar with daily workouts, mileage, intensity levels, and phase explanations only for {available_days}."
+      Create a progressive running training plan from {start_date} until {competition_date} for {participants} preparing for {training_type}.
+      
+      Focus on:
+      1. Weekly structure with base building, strength, and taper phases
+      2. Progressive mileage suitable for {current_fitness}
+      3. Training schedule for {available_days} only
+      4. Key workouts for trail running preparation
+      
+      Keep it practical and focused on the 6-month timeline.
+    expected_output: "A week-by-week training calendar with workouts for {available_days}, including mileage and intensity levels."
     agent: "running_coach"
   
   warmup_stretching:
