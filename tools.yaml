@@ -1,0 +1,40 @@
+# Global Tool Registry for OrcasAI
+# This file defines all available tools that can be used by the orca pods
+
+tools:
+  search_tool:
+    class: "SerperDevTool"
+    module: "crewai_tools"
+    description: "Search the internet for current information and news"
+    config:
+      api_key_env: "SERPER_API_KEY"
+  
+  scrape_tool:
+    class: "ScrapeWebsiteTool"
+    module: "crewai_tools"
+    description: "Extract content from websites and web pages"
+    config: {}
+  
+  file_tool:
+    class: "FileReadTool"
+    module: "crewai_tools"
+    description: "Read and analyze files from the local filesystem"
+    config: {}
+  
+  code_analysis_tool:
+    class: "CodeAnalysisTool"
+    module: "custom_tools"
+    description: "Analyze code for quality, structure, security issues, and best practices"
+    config: {}
+  
+  data_analysis_tool:
+    class: "DataAnalysisTool"
+    module: "custom_tools"
+    description: "Analyze datasets, identify patterns, and generate statistical insights"
+    config: {}
+  
+  chart_tool:
+    class: "ChartGenerationTool"
+    module: "custom_tools"
+    description: "Generate chart and visualization recommendations for different types of data"
+    config: {}
