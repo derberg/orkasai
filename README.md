@@ -121,6 +121,9 @@ ollama pull codellama       # Specialized for code development pod
 
 # Optional: Larger models (require more RAM)
 ollama pull llama3.1:70b    # 70B parameters (excellent quality, needs 64GB+ RAM)
+
+# For coding
+ollama pull deepseek-coder:33b #more than 19GB
 ```
 
 ### Optional: Install Web UI for Model Management
@@ -356,3 +359,19 @@ Real orcas are intelligent marine mammals known for:
 - **Collective Success**: Achieving goals no single orca could accomplish alone
 
 OrcasAI applies these principles to AI agent coordination, where each "agent" has specialized skills and works together with others in the pod to accomplish complex tasks.
+
+## 📄 License
+
+**GNU Affero General Public License v3.0 (AGPL-3.0)**
+
+This project is free and open-source software licensed under AGPL-3.0. You are free to:
+- ✅ Use, modify, and distribute this software
+- ✅ Use it for personal, educational, or non-commercial projects
+- ✅ Use it commercially **if your entire project is also open-sourced under AGPL-3.0**
+
+**Commercial use requirements:**
+- If you use this software in a commercial product or service, your entire project must be open-sourced under AGPL-3.0
+- This includes network services and SaaS applications
+- Users of your service must have access to the complete source code
+
+See the [LICENSE](LICENSE) file for full details.
