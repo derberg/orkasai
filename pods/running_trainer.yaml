@@ -11,15 +11,13 @@ llm:
 # Available tools for this pod
 tools:
   enabled:
+    - "search_tool"
     - "scrape_tool"
     - "data_analysis_tool"
     - "chart_tool"
-    - "calculator_tool"
-    - "calendar_tool"
     - "youtube_tool"
     - "pdf_tool"
-  disabled:
-    - "search_tool"
+  disabled: []
 
 # Agent definitions (the research orcas in this pod)
 agents:
@@ -30,7 +28,7 @@ agents:
       This AI agent was designed as a virtual sports physician with a specialization in running biomechanics and endurance training. Trained on a wealth of medical literature, coaching methodologies, and athlete case studies, it acts as both a trusted guide and a data-driven researcher. Its mission is to help runners—from beginners to professionals—optimize performance while safeguarding their long-term health, preventing injuries, and promoting recovery.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "data_analysis_tool"]
+    tools: ["search_tool", "scrape_tool", "data_analysis_tool"]
 
   running_coach:
     role: "Trail Running Coach"
@@ -39,7 +37,7 @@ agents:
       A seasoned trail runner and coach, blending training periodization with practical experience from ultra events. Passionate about helping runners tackle diverse terrains safely and efficiently.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "data_analysis_tool", "chart_tool", "calculator_tool", "calendar_tool", "youtube_tool", "pdf_tool"]
+    tools: ["search_tool", "scrape_tool", "data_analysis_tool", "chart_tool", "youtube_tool", "pdf_tool"]
 
   strength_mobility_specialist:
     role: "Strength & Mobility Specialist"
@@ -48,7 +46,7 @@ agents:
       An AI physiotherapist and strength trainer focused on functional movement and stability. It combines knowledge of biomechanics with practical training techniques to help runners enhance their performance and prevent injuries.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "data_analysis_tool"]
+    tools: ["search_tool", "scrape_tool", "data_analysis_tool"]
   
   hydration:
     role: "Nutrition & Hydration Expert"
@@ -57,7 +55,7 @@ agents:
       Built on sports nutrition science, with special focus on endurance athletes. It provides personalized advice on hydration, carbohydrate intake, and recovery nutrition to support sustained performance.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "data_analysis_tool", "chart_tool", "calculator_tool"]
+    tools: ["search_tool", "scrape_tool", "data_analysis_tool", "chart_tool"]
 
   mental_coach:
     role: "Mental Performance Coach"
@@ -66,7 +64,7 @@ agents:
       A mental skills trainer drawing from sports psychology, mindfulness, and resilience-building techniques. It helps athletes develop mental toughness and a positive mindset.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool"]
+    tools: ["search_tool", "scrape_tool"]
 
   recovery:
     role: "Recovery & Sleep Specialist"
@@ -75,7 +73,7 @@ agents:
       Inspired by sports medicine and physiology research, built to keep athletes balanced and healthy. It emphasizes the importance of rest and recovery in training plans.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "data_analysis_tool"]
+    tools: ["search_tool", "scrape_tool", "data_analysis_tool"]
 
   warm-up:
     role: "Warm-Up & Recovery Routine Coach"
@@ -84,7 +82,7 @@ agents:
       A movement specialist trained in sports science and physiotherapy principles, this agent makes sure you activate the right muscles before a run, prevent tightness after, and keep long-term mobility.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "youtube_tool", "pdf_tool"]
+    tools: ["search_tool", "scrape_tool", "youtube_tool", "pdf_tool"]
 
   diet:
     role: "Performance Diet Planner"
@@ -93,7 +91,7 @@ agents:
       This agent was modeled after elite sports dietitians who work with endurance athletes. It integrates nutritional science, metabolic data, and practical cooking know-how to build realistic, enjoyable meal plans. Whether you're carb-loading for a big race, aiming for lean muscle preservation during heavy training, or ensuring enough antioxidants for recovery, the Performance Diet Planner adapts recommendations to your goals and lifestyle.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "data_analysis_tool", "chart_tool", "calculator_tool", "youtube_tool", "pdf_tool"]
+    tools: ["search_tool", "scrape_tool", "data_analysis_tool", "chart_tool", "youtube_tool", "pdf_tool"]
 
   meal:
     role: "Meal Ideas Companion"
@@ -102,7 +100,7 @@ agents:
       Inspired by everyday athletes who juggle training with busy lives, this agent acts like a creative kitchen buddy. It combines sports nutrition principles with home cooking know-how to recommend easy recipes, portable snacks, and balanced meal combos. Whether you need a pre-run energy boost, a recovery smoothie, or a simple dinner after a long trail session, the Meal Ideas Companion helps you stay fueled without the stress of planning every detail.
     allow_delegation: false
     verbose: true
-    tools: ["scrape_tool", "youtube_tool", "pdf_tool"]
+    tools: ["search_tool", "scrape_tool", "youtube_tool", "pdf_tool"]
 
 # Task definitions
 tasks:

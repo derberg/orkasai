@@ -29,7 +29,8 @@ Examples:
     python orcasai.py run content_creation --topic="AI in Healthcare"
     python orcasai.py run code_development --project="E-commerce API"
     python orcasai.py run research_analysis --topic="Market trends" --input industry "Software"
-    python orcasai.py interactive
+    python orcasai.py interactive --serper-api-key="your_api_key_here"
+    python orcasai.py run running_trainer --topic="Marathon training" --serper-api-key="your_api_key"
 """
 
 import argparse
@@ -217,75 +218,73 @@ Please follow these guidelines strictly in all your responses.
         return "\n".join(content_parts)
     
     def interactive_mode(self):
-        """Run in interactive mode."""
-        print("\n🐋 OrcasAI Pod Commander - Interactive Mode")
-        print("=" * 50)
-        print("Welcome to the pod coordination center!")
+        """Interactive mode for running pods."""
+        print("🌊 Welcome to OrcasAI Interactive Mode!")
+        print("The depths of AI coordination await...")
+        
+        # Check for API key if search tools are available
+        if not os.environ.get('SERPER_API_KEY'):
+            print("\n🔍 Search functionality requires a Serper API key")
+            serper_key = input("Enter your Serper API key (or press Enter to skip): ").strip()
+            if serper_key:
+                os.environ['SERPER_API_KEY'] = serper_key
+                print("✅ Serper API key set for this session")
         
         while True:
-            print(f"\n🌊 Pod Commands:")
-            print("  1. List available pods")
-            print("  2. Show pod information")
-            print("  3. Deploy pod on mission")
-            print("  4. Exit to surface")
+            print("\n" + "="*50)
+            print("🐋 What would you like to do?")
+            print("1. 📋 List available pods")
+            print("2. ℹ️  Get pod information") 
+            print("3. 🚀 Run a pod")
+            print("4. 🌊 Exit")
             
-            choice = input("\nEnter your command (1-4): ").strip()
+            choice = input("\nEnter your choice (1-4): ").strip()
             
             if choice == "1":
+                print("\n📋 Available Pods:")
                 self.list_pods()
-            
+                
             elif choice == "2":
-                pods = list(self.runner.loader.pods.keys())
-                if not pods:
-                    print("🐋 No pods in the ocean.")
-                    continue
-                
-                print(f"\n🐋 Available pods:")
-                for i, pod in enumerate(pods, 1):
-                    print(f"   {i}. {pod}")
-                
-                try:
-                    pod_choice = int(input(f"\nSelect pod (1-{len(pods)}): ").strip())
-                    if 1 <= pod_choice <= len(pods):
-                        pod_name = pods[pod_choice - 1]
-                        self.pod_info(pod_name)
-                    else:
-                        print(f"❌ Invalid choice. Please enter 1-{len(pods)}.")
-                except ValueError:
-                    print("❌ Invalid input. Please enter a number.")
-            
+                pod_name = input("Enter pod name: ").strip()
+                if pod_name:
+                    self.get_pod_info(pod_name)
+                else:
+                    print("❌ Please enter a valid pod name")
+                    
             elif choice == "3":
-                pods = list(self.runner.loader.pods.keys())
-                if not pods:
-                    print("🐋 No pods in the ocean.")
+                print("\n📋 Available Pods:")
+                self.list_pods()
+                
+                pod_name = input("\nEnter pod name to run: ").strip()
+                if not pod_name:
+                    print("❌ Please enter a valid pod name")
                     continue
                 
-                print(f"\n🐋 Available pods:")
-                for i, pod in enumerate(pods, 1):
-                    print(f"   {i}. {pod}")
+                # Gather inputs and run the pod
+                inputs = self._get_pod_inputs(pod_name)
+                print(f"\n🚀 Running pod: {pod_name}")
+                print("🌊 The pod is diving deep...")
                 
                 try:
-                    pod_choice = int(input(f"\nSelect pod for mission (1-{len(pods)}): ").strip())
-                    if 1 <= pod_choice <= len(pods):
-                        pod_name = pods[pod_choice - 1]
-                        # Get inputs based on pod type
-                        inputs = self._get_pod_inputs(pod_name)
-                        self.run_pod(pod_name, inputs)
+                    result = self.runner.run_pod(pod_name, inputs)
+                    print("\n✅ Pod execution completed successfully!")
+                    print(f"\nResult:\n{result}")
+                except Exception as e:
+                    print(f"\n❌ Pod execution failed: {e}")
+                    
+            elif choice == "4":
+                print("🌊 Returning to surface... Goodbye!")
+                break
+                
+            else:
+                try:
+                    choice_num = int(choice)
+                    if choice_num < 1 or choice_num > 4:
+                        print("❌ Please enter a number between 1-4")
                     else:
-                        print(f"❌ Invalid choice. Please enter 1-{len(pods)}.")
+                        print("❌ Invalid choice. Please try again.")
                 except ValueError:
                     print("❌ Invalid input. Please enter a number.")
-                
-                # Get inputs based on pod type
-                inputs = self._get_pod_inputs(pod_name)
-                self.run_pod(pod_name, inputs)
-            
-            elif choice == "4":
-                print("� Returning to surface... Goodbye!")
-                break
-            
-            else:
-                print("❌ Invalid command. Please enter 1-4.")
     
     def _get_pod_inputs(self, pod_name: str) -> Dict[str, Any]:
         """Get inputs for a specific pod interactively."""
@@ -362,11 +361,23 @@ def main():
     run_parser.add_argument('--project', help='Project description for development pods')
     run_parser.add_argument('--input', action='append', nargs=2, metavar=('KEY', 'VALUE'),
                            help='Additional input key-value pairs (can be used multiple times)')
+    run_parser.add_argument('--serper-api-key', help='Serper API key for search functionality')
+    run_parser.add_argument('--openai-api-key', help='OpenAI API key (optional)')
     
     # Interactive command
-    subparsers.add_parser('interactive', help='Run in interactive mode')
+    interactive_parser = subparsers.add_parser('interactive', help='Run in interactive mode')
+    interactive_parser.add_argument('--serper-api-key', help='Serper API key for search functionality')
+    interactive_parser.add_argument('--openai-api-key', help='OpenAI API key (optional)')
     
     args = parser.parse_args()
+    
+    # Set API keys as environment variables if provided
+    if hasattr(args, 'serper_api_key') and args.serper_api_key:
+        os.environ['SERPER_API_KEY'] = args.serper_api_key
+        print("✅ Serper API key set from command line")
+    if hasattr(args, 'openai_api_key') and args.openai_api_key:
+        os.environ['OPENAI_API_KEY'] = args.openai_api_key
+        print("✅ OpenAI API key set from command line")
     
     if not args.command:
         parser.print_help()

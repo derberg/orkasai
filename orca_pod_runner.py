@@ -46,7 +46,14 @@ class ToolRegistry:
                         # This is an environment variable reference
                         import os
                         env_var = value.replace('_env', '').upper()
-                        init_kwargs[key] = os.getenv(env_var)
+                        env_value = os.getenv(env_var)
+                        if env_value:
+                            init_kwargs[key] = env_value
+                        else:
+                            print(f"⚠️  Warning: Environment variable {env_var} not set for tool {name}")
+                            # Don't register the tool if required env var is missing
+                            self.tools[name] = None
+                            return
                     else:
                         init_kwargs[key] = value
                 tool_instance = tool_class(**init_kwargs)

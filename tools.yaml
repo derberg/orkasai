@@ -39,24 +39,6 @@ tools:
     description: "Generate chart and visualization recommendations for different types of data"
     config: {}
 
-  calculator_tool:
-    class: "CalculatorTool"
-    module: "crewai_tools"
-    description: "Perform mathematical calculations for training metrics, pacing, nutrition calculations"
-    config: {}
-
-  weather_tool:
-    class: "WeatherTool"
-    module: "crewai_tools"
-    description: "Get weather information for training planning and race day preparation"
-    config: {}
-
-  calendar_tool:
-    class: "CalendarTool"
-    module: "crewai_tools"
-    description: "Create and manage training schedules, track progress, and plan periodization"
-    config: {}
-
   youtube_tool:
     class: "YoutubeChannelSearchTool"
     module: "crewai_tools"
