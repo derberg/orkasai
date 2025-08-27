@@ -19,6 +19,13 @@ from datetime import datetime, timedelta
 
 from crewai import Agent, Task, Crew, LLM
 import warnings
+
+try:
+    from progress_callbacks import VerboseProgressCallback, SimpleProgressCallback
+except ImportError:
+    # Fallback if progress_callbacks not available
+    VerboseProgressCallback = None
+    SimpleProgressCallback = None
 warnings.filterwarnings('ignore')
 
 
@@ -343,6 +350,7 @@ class OrcaPodRunner:
             print(f"📊 Mission complexity: {agents_count} agents, {tasks_count} tasks")
             print(f"⏱️  Estimated completion: {estimated_completion.strftime('%H:%M:%S')} (≈{estimated_minutes} min)")
             print(f"🌊 Dive depth: {'Deep' if agents_count > 3 else 'Standard'}")
+            print(f"🔧 Verbose mode: ENABLED - You'll see detailed progress")
             
             # Execute with progress tracking
             result = self._execute_with_progress_tracking(crew, inputs or {}, start_time, estimated_minutes)
@@ -396,21 +404,29 @@ class OrcaPodRunner:
         
         def progress_tracker():
             """Background thread to show progress updates."""
+            last_activity_message = time.time()
+            
             while True:
                 elapsed = time.time() - start_time
                 elapsed_minutes = elapsed / 60
+                current_time = datetime.now().strftime('%H:%M:%S')
                 
                 if elapsed_minutes < estimated_minutes:
                     progress = (elapsed_minutes / estimated_minutes) * 100
                     remaining = estimated_minutes - elapsed_minutes
                     
-                    sys.stdout.write(f"\r🔄 Progress: {progress:.1f}% | Elapsed: {self._format_duration(elapsed)} | Est. remaining: {remaining:.1f}min")
+                    sys.stdout.write(f"\r🔄 Progress: {progress:.1f}% | Elapsed: {elapsed_minutes:.1f}min | Est. remaining: {remaining:.1f}min")
                     sys.stdout.flush()
                 else:
                     # Beyond estimate
                     overtime = elapsed_minutes - estimated_minutes
-                    sys.stdout.write(f"\r⏰ Running overtime: +{overtime:.1f}min | Total elapsed: {self._format_duration(elapsed)}")
+                    sys.stdout.write(f"\r⏰ Running overtime: +{overtime:.1f}min | Total elapsed: {elapsed_minutes:.1f}min")
                     sys.stdout.flush()
+                
+                # Show activity message every 2 minutes
+                if time.time() - last_activity_message > 120:
+                    print(f"\n💭 [{current_time}] Agents still working... (using search tools and reasoning)")
+                    last_activity_message = time.time()
                 
                 time.sleep(30)  # Update every 30 seconds
         

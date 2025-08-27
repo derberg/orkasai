@@ -109,7 +109,7 @@ tasks:
     description: |
       Create a progressive running training plan from {start_date} until {competition_date} for {participants} preparing for {training_type}.
       No matter how many participants, the plan should be one for all.
-      
+
       Focus on:
       1. Weekly structure with base building, strength, and taper phases
       2. Progressive mileage suitable for {current_fitness}
@@ -264,6 +264,3 @@ inputs:
     - name: "file_naming"
       description: "Template for output file naming using input variables"
       example: "myrun"
-    - name: "output_language"
-      description: "Language for the output content"
-      example: "spanish, french, german, polish, etc."

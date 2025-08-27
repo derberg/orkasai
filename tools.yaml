@@ -5,10 +5,11 @@ tools:
   search_tool:
     class: "LimitedSearchTool"
     module: "custom_tools"
-    description: "Search the internet with built-in limits (max 10 results, 500 chars each)"
+    description: "Search the internet with strict limits (max 2 searches per agent, 3 results each)"
     config:
-      max_results: 5
-      max_length: 500
+      max_results: 3
+      max_length: 400
+      max_searches: 2
   
   scrape_tool:
     class: "ScrapeWebsiteTool"

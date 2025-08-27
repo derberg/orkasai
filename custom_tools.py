@@ -14,45 +14,74 @@ import subprocess
 
 
 class LimitedSearchTool(BaseTool):
-    """Search tool with built-in result limits to prevent infinite processing"""
+    """Search tool with built-in result limits and search count limits to prevent infinite processing"""
     
     name: str = "limited_search"
-    description: str = "Search the internet with built-in limits (max 10 results, 500 chars each)"
-    max_results: int = 10
-    max_length: int = 500
+    description: str = "Search the internet with strict limits (max 2 searches per agent, 3 results each)"
+    max_results: int = 3
+    max_length: int = 400
+    max_searches: int = 2
     
-    def __init__(self, max_results: int = 10, max_length: int = 500, **kwargs):
+    def __init__(self, max_results: int = 3, max_length: int = 400, max_searches: int = 2, **kwargs):
         super().__init__(**kwargs)
         self.max_results = max_results
         self.max_length = max_length
+        self.max_searches = max_searches
+        self.search_count = 0
         # Initialize the SerperDevTool - it will get API key from environment
         self._search_tool = None
     
     def _run(self, query: str) -> str:
-        """Execute search with limits"""
+        """Execute search with strict limits"""
         try:
+            # Check search count limit
+            if self.search_count >= self.max_searches:
+                print(f"🚫 [SEARCH] Search limit reached ({self.max_searches} searches used)")
+                return f"Search limit reached. Used {self.search_count}/{self.max_searches} searches. Please work with existing information."
+            
+            # Increment search count
+            self.search_count += 1
+            
             # Lazy initialize the search tool
             if self._search_tool is None:
-                self._search_tool = SerperDevTool()
+                try:
+                    self._search_tool = SerperDevTool(n_results=self.max_results)
+                    print(f"✅ [SEARCH] SerperDevTool initialized with n_results={self.max_results}")
+                except Exception as e:
+                    print(f"❌ [SEARCH] Failed to initialize SerperDevTool: {str(e)}")
+                    return f"❌ Search tool initialization failed: {str(e)}"
             
-            print(f"🔍 Searching (limited to {self.max_results} results): {query}")
+            print(f"🔍 [SEARCH] Search {self.search_count}/{self.max_searches}: {query}")
+            print(f"🔧 [SEARCH] Limits: max {self.max_results} results, {self.max_length} chars each")
             
             # Get raw results
             raw_results = self._search_tool.run(query)
+            
+            print(f"✅ [SEARCH] Search completed successfully")
             
             # Process and limit results
             if isinstance(raw_results, str):
                 # If it's already a string, truncate it
                 limited_results = raw_results[:self.max_length * self.max_results]
-                return f"🔍 Search Results (limited to {self.max_results} results, {self.max_length} chars each):\n\n{limited_results}"
+                print(f"📊 [SEARCH] Processed {len(limited_results)} characters from string results")
+                
+                if self.search_count >= self.max_searches:
+                    limited_results += f"\n\n⚠️ SEARCH LIMIT REACHED: No more searches allowed. Work with this information."
+                
+                return f"🔍 Search Results (#{self.search_count}, limited to {self.max_results} results):\n\n{limited_results}"
             
             # Fallback: convert to string and limit
             result_str = str(raw_results)
             limited_text = result_str[:self.max_length * self.max_results]
+            print(f"📊 [SEARCH] Processed {len(limited_text)} characters from object results")
             
-            return f"🔍 Search Results (limited to {self.max_results} results, {self.max_length} chars each):\n\n{limited_text}"
+            if self.search_count >= self.max_searches:
+                limited_text += f"\n\n⚠️ SEARCH LIMIT REACHED: No more searches allowed. Work with this information."
+            
+            return f"🔍 Search Results (#{self.search_count}, limited to {self.max_results} results):\n\n{limited_text}"
             
         except Exception as e:
+            print(f"❌ [SEARCH] Search failed with error: {str(e)}")
             return f"❌ Search failed: {str(e)}"
 
 

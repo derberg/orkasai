@@ -115,30 +115,12 @@ class OrcaCLI:
         if output_config:
             # Add style guidelines as context for agents
             style_guidelines = output_config.get('style_guidelines', [])
-            # Only use user input for language, no YAML default
-            language = inputs.get('output_language')
             
-            guidelines_parts = []
-            if language:
-                guidelines_parts.append(f"- SEARCH AND RESEARCH in English and {language} for best results")
-                guidelines_parts.append(f"- THINK AND ANALYZE in English for optimal reasoning")
-                guidelines_parts.append(f"- WRITE FINAL OUTPUT in {language} only")
-                guidelines_parts.append(f"- Use English keywords when searching for information unless they are provided in {language}")
             if style_guidelines:
-                guidelines_parts.extend([f"- {guideline}" for guideline in style_guidelines])
-            
-            if guidelines_parts:
-                guidelines_text = "\n".join(guidelines_parts)
+                guidelines_text = "\n".join([f"- {guideline}" for guideline in style_guidelines])
                 inputs['_output_guidelines'] = f"""
-IMPORTANT LANGUAGE AND OUTPUT REQUIREMENTS:
+IMPORTANT OUTPUT REQUIREMENTS:
 {guidelines_text}
-
-PROCESS:
-1. Search using English terms unless data provided in {language}
-2. Think and analyze information in English 
-3. Only translate the final response to the requested language
-4. This ensures better search results and reasoning quality
-5. All links fetched and used in analysis should be listed in the result
 
 Please follow these guidelines strictly in all your responses.
 """
