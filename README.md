@@ -1,10 +1,10 @@
-## 🌊 What is OrcasAI?
+## What is OrcasAI?
 
 OrcasAI is inspired by how orcas work together in pods. Just like orcas coordinate to accomplish complex tasks, this system organizes AI agents into specialized groups called "pods" to handle different challenges.
 
 OrcasAI provides a simple YAML configuration layer on top of CrewAI, making it easy to create and manage agent teams without writing code.
 
-## 🙏 Credits
+## Credits
 
 This project is built on top of [CrewAI](https://crewai.com/), an excellent open-source framework for orchestrating role-playing, autonomous AI agents. CrewAI provides the core agent coordination capabilities, while OrcasAI adds a simplified YAML-based configuration layer.
 
@@ -17,24 +17,7 @@ This project is built on top of [CrewAI](https://crewai.com/), an excellent open
 - **🔄 Flexible Inputs**: Pass different parameters to each pod
 - **🧠 LLM Support**: Configure different language models per pod
 
-## 🗂️ Project Structure
-
-```
-orkasai/
-├── pods/                     # Individual pod configurations
-│   ├── content_creation.yaml # Content creation pod
-│   ├── code_development.yaml # Software development pod
-│   └── research_analysis.yaml# Research & analysis pod
-├── tools.yaml               # Global tool registry
-├── orcasai.py              # Main CLI interface
-├── orca_pod_runner.py      # Core pod management framework
-├── custom_tools.py         # Custom tool implementations
-├── setup.sh                # Linux/macOS setup script
-├── setup.bat               # Windows setup script
-└── requirements.txt        # Python dependencies
-```
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
