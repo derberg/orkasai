@@ -108,6 +108,7 @@ tasks:
   training_plan:
     description: |
       Create a progressive running training plan from {start_date} until {competition_date} for {participants} preparing for {training_type}.
+      No matter how many participants, the plan should be one for all.
       
       Focus on:
       1. Weekly structure with base building, strength, and taper phases

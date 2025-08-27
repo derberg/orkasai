@@ -6,10 +6,54 @@ in agent farm configurations.
 """
 
 from crewai.tools import BaseTool
+from crewai_tools import SerperDevTool
 from typing import Type, Any, List
 import os
 import ast
 import subprocess
+
+
+class LimitedSearchTool(BaseTool):
+    """Search tool with built-in result limits to prevent infinite processing"""
+    
+    name: str = "limited_search"
+    description: str = "Search the internet with built-in limits (max 10 results, 500 chars each)"
+    max_results: int = 10
+    max_length: int = 500
+    
+    def __init__(self, max_results: int = 10, max_length: int = 500, **kwargs):
+        super().__init__(**kwargs)
+        self.max_results = max_results
+        self.max_length = max_length
+        # Initialize the SerperDevTool - it will get API key from environment
+        self._search_tool = None
+    
+    def _run(self, query: str) -> str:
+        """Execute search with limits"""
+        try:
+            # Lazy initialize the search tool
+            if self._search_tool is None:
+                self._search_tool = SerperDevTool()
+            
+            print(f"🔍 Searching (limited to {self.max_results} results): {query}")
+            
+            # Get raw results
+            raw_results = self._search_tool.run(query)
+            
+            # Process and limit results
+            if isinstance(raw_results, str):
+                # If it's already a string, truncate it
+                limited_results = raw_results[:self.max_length * self.max_results]
+                return f"🔍 Search Results (limited to {self.max_results} results, {self.max_length} chars each):\n\n{limited_results}"
+            
+            # Fallback: convert to string and limit
+            result_str = str(raw_results)
+            limited_text = result_str[:self.max_length * self.max_results]
+            
+            return f"🔍 Search Results (limited to {self.max_results} results, {self.max_length} chars each):\n\n{limited_text}"
+            
+        except Exception as e:
+            return f"❌ Search failed: {str(e)}"
 
 
 class CodeAnalysisTool(BaseTool):

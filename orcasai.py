@@ -138,6 +138,7 @@ PROCESS:
 2. Think and analyze information in English 
 3. Only translate the final response to the requested language
 4. This ensures better search results and reasoning quality
+5. All links fetched and used in analysis should be listed in the result
 
 Please follow these guidelines strictly in all your responses.
 """
@@ -245,61 +246,8 @@ Please follow these guidelines strictly in all your responses.
                 os.environ['SERPER_API_KEY'] = serper_key
                 print("✅ Serper API key set for this session")
         
-        while True:
-            print("\n" + "="*50)
-            print("🐋 What would you like to do?")
-            print("1. 📋 List available pods")
-            print("2. ℹ️  Get pod information") 
-            print("3. 🚀 Run a pod")
-            print("4. 🌊 Exit")
-            
-            choice = input("\nEnter your choice (1-4): ").strip()
-            
-            if choice == "1":
-                print("\n📋 Available Pods:")
-                self.list_pods()
-                
-            elif choice == "2":
-                pod_name = input("Enter pod name: ").strip()
-                if pod_name:
-                    self.get_pod_info(pod_name)
-                else:
-                    print("❌ Please enter a valid pod name")
-                    
-            elif choice == "3":
-                print("\n📋 Available Pods:")
-                self.list_pods()
-                
-                pod_name = input("\nEnter pod name to run: ").strip()
-                if not pod_name:
-                    print("❌ Please enter a valid pod name")
-                    continue
-                
-                # Gather inputs and run the pod
-                inputs = self._get_pod_inputs(pod_name)
-                print(f"\n🚀 Running pod: {pod_name}")
-                print("🌊 The pod is diving deep...")
-                
-                try:
-                    result = self.runner.run_pod(pod_name, inputs)
-                    print("\n✅ Pod execution completed successfully!")
-                    print(f"\nResult:\n{result}")
-                except Exception as e:
-                    print(f"\n❌ Pod execution failed: {e}")
-                    
-            elif choice == "4":
-                print("🌊 Returning to surface... Goodbye!")
-                break
-                
-            else:
-                try:
-                    choice_num = int(choice)
-                    if choice_num < 1 or choice_num > 4:
-                        print("❌ Please enter a number between 1-4")
-                    else:
-                        print("❌ Invalid choice. Please try again.")
-                except ValueError:
-                    print("❌ Invalid input. Please enter a number.")
+        # Use the enhanced timing interface
+        self.runner.run_with_time_tracking()
     
     def _get_pod_inputs(self, pod_name: str) -> Dict[str, Any]:
         """Get inputs for a specific pod interactively."""
