@@ -5,19 +5,20 @@
 echo "🐋 Setting up OrcasAI Pod System..."
 echo "=================================="
 
-# Check if Python 3 is installed
-if ! command -v python3 &> /dev/null; then
-    echo "❌ Python 3 is not installed. Please install Python 3.8 or higher."
+# Check if Python 3.12 is installed
+if ! command -v /opt/homebrew/bin/python3.12 &> /dev/null; then
+    echo "❌ Python 3.12 is not installed. Please install Python 3.12 via Homebrew."
+    echo "   Run: brew install python@3.12"
     exit 1
 fi
 
 # Display Python version
-echo "✅ Python version: $(python3 --version)"
+echo "✅ Python version: $(/opt/homebrew/bin/python3.12 --version)"
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "📦 Creating virtual environment..."
-    python3 -m venv venv
+    /opt/homebrew/bin/python3.12 -m venv venv
     echo "✅ Virtual environment created in ./venv/"
 else
     echo "✅ Virtual environment already exists in ./venv/"
