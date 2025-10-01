@@ -109,6 +109,20 @@ ollama pull llama3.1:70b    # 70B parameters (excellent quality, needs 64GB+ RAM
 ollama pull deepseek-coder:33b #more than 19GB
 ```
 
+### 💡 Ollama Pro Tips
+
+**Managing Models Efficiently:**
+- **Monitor usage:** `ollama ps` to see currently running models
+- **Stop models:** `ollama stop <model>` to free memory when switching
+- **Quick switch:** You can easily switch between models for different tasks
+- **Consider quantized versions** if you want to run multiple models simultaneously
+
+**For High-Performance Systems (M4 Mac with 48GB+ RAM):**
+- **Best coding models:** `qwen2.5-coder:32b` (~19GB, excellent performance)
+- **Best writing models:** `llama3.1:70b` (~40GB, premium quality)
+- **Memory strategy:** Run one large model at a time, stop when switching
+- **Storage planning:** Large models need significant disk space (400GB+ recommended)
+
 ### Optional: Install Web UI for Model Management
 
 ```bash
