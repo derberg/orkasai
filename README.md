@@ -103,8 +103,9 @@ ollama pull llama3.1        # 8B parameters (better quality, slower)
 ollama pull codellama       # Specialized for code development pod
 
 # Optional: Larger models (require more RAM)
-ollama pull llama3.1:70b    # 70B parameters (excellent quality, needs 64GB+ RAM)
-
+ollama pull qwen2.5-coder:32b # Excellent at code generation, debugging, and explanations
+ollama pull llama3.1:70b    # 70B parameters (excellent quality, needs 64GB+ RAM) Best local writing model
+ollama pull mistral-large:123b # Top-tier writing quality
 # For coding
 ollama pull deepseek-coder:33b #more than 19GB
 ```
